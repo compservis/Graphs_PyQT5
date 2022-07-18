@@ -1,4 +1,4 @@
-DEBUG_TEST = True
+DEBUG_TEST = False
 
 from pathlib import Path
 import random
@@ -36,7 +36,7 @@ class DataHandler(QObject):
     def init_serial(self):
         if not DEBUG_TEST:
             try:
-                self.ser = serial.Serial(SERIAL_PORT, BAUDRATE)
+                self.ser = serial.Serial(SERIAL_PORT, BAUDRATE, timeout=1)
             except:
                 print('Unable to open Serial')
                 self.ser = None
@@ -47,6 +47,7 @@ class DataHandler(QObject):
         if not DEBUG_TEST:
             try:
                 reading = self.ser.readline().decode()
+                print("reading:", reading)
             except:
                 pass
         else:
@@ -63,11 +64,17 @@ class DataHandler(QObject):
         self.handle_data(reading)
         self.cs += 1
 
-    def handle_data(self, data):
-        self.new_data = json.loads(data)
-        # print(self.new_data)
-        self.save_to_log()
-        self.new_data_available.emit(self.new_data)
+    def handle_data(self, data: str):
+        if len(data) > 2:
+            try:
+                self.new_data = json.loads(data)
+                # print(self.new_data)
+                self.save_to_log()
+                self.new_data_available.emit(self.new_data)
+            except:
+                print("Bad data provided!")
+        else:
+            print("Got not enough symbols!")
 
     def last_values_for_sensor(self, sensor):
         l = self.last_log.loc[self.last_log['sensor'] == sensor]
