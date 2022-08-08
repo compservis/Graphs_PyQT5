@@ -15,5 +15,7 @@ Python 3, PySide2, pyqtgraph, pyserial, pandas, numpy
 
 ## Screenshots
 !["Logs"](images/1.jpeg "Logs")
+!["Digital values"](images/3.jpg "Digital values")
+!["Plots"](images/4.jpg "Plots")
 
 Stylesheet: amoled.qss by @gtronick
